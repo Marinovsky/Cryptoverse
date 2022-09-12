@@ -5,7 +5,7 @@ from IPython.display import display
 import urllib.request
 import numpy as np
 from Utils import utils
-from Cryptoanalysis import CryptoanalysisHill
+from CryptoanalysisHill import ComputeInverseKey
 
 def EncryptImage(key, url):
     """
@@ -59,7 +59,7 @@ def EncryptImage(key, url):
     
     # Show the image and save it in a .pgm file
     encryptedImg.show()
-    encryptedImg.save("result1.pgm")
+    encryptedImg.save("result.pgm")
 
 def DecryptImage(decryptKey, imgPath):
     """
@@ -79,11 +79,11 @@ def DecryptImage(decryptKey, imgPath):
     """
 
     try:
-        utils.IsValidMatrix(key)
+        utils.IsValidMatrix(decryptKey)
     except:
         return -1
 
-    m = len(key)
+    m = len(decryptKey)
     img = Image.open(imgPath)
     decryptedImg = img
 
@@ -103,9 +103,10 @@ def DecryptImage(decryptKey, imgPath):
             
             rowPixels.append(decryptedImg.getpixel((x,y)))
     
-    #decryptedImg.show() # Instead, return the image
+    #decryptedImg.show()
+    decryptedImg.save("out.png")
 
-def EncryptText(m, key, text):
+def EncryptText(key, text):
     """
     Description
     -----------
@@ -156,7 +157,7 @@ def EncryptText(m, key, text):
     # Return the encrypted text
     return encryptedText
 
-def DecryptText(m, decryptKey, text):
+def DecryptText(decryptKey, text):
     """
     Description
     -----------
@@ -173,11 +174,11 @@ def DecryptText(m, decryptKey, text):
     """
 
     try:
-        utils.IsValidMatrix(key)
+        utils.IsValidMatrix(decryptKey)
     except:
         return -1
 
-    m = len(key)
+    m = len(decryptKey)
     decryptedText = ""
     
     # Iterate over the text taking at each step m characters to transform
@@ -204,28 +205,33 @@ def DecryptText(m, decryptKey, text):
 m = 3
 n = 255
 key = [[10,4,12],[3,14,4],[8,9,0]]
-inverseKey = ComputeInverseKey(m, n, key)
+inverseKey = ComputeInverseKey(n, key)
 
-EncryptImage(m, key, "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/600px-Cat03.jpg")
-DecryptImage(m, inverseKey, "result.pgm")
+EncryptImage(key, "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/600px-Cat03.jpg")
+DecryptImage(inverseKey, "result.pgm")
 
 
 # Example 2
 m = 2
 n = 26
 key = [[11, 8], [3, 7]]
-inverseKey = ComputeInverseKey(m, n, key)
+inverseKey = ComputeInverseKey(n, key)
 text = "july"
 
-encryptedText = EncryptText(m, key, text)
+encryptedText = EncryptText(key, text)
 print(encryptedText)
-decryptedText = DecryptText(m, inverseKey, encryptedText)
+decryptedText = DecryptText(inverseKey, encryptedText)
 print(decryptedText)
-"""
-m = 3
-n = 255
-key = [[10,4,12],[3,14,4],[8,9,0]]
-inverseKey = CryptoanalysisHill.ComputeInverseKey(m, n, key)
 
-EncryptImage(key, "https://upload.wikimedia.org/wikipedia/commons/5/56/Tux.jpg")
-DecryptImage(inverseKey, "result1.pgm")
+#Good cases
+https://i.scdn.co/image/ab6765630000ba8a8c04c65ceb701d64f8966e23
+https://upload.wikimedia.org/wikipedia/commons/5/54/Panda_Cub_%284274178112%29.jpg
+https://i.pinimg.com/originals/6f/0b/3b/6f0b3baa01e2136b2e2d93709e622e2c.jpg
+
+# Middle cases
+https://scontent.fbog4-1.fna.fbcdn.net/v/t39.30808-6/306102097_2868887480087696_8956594249965335582_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=a26aad&_nc_eui2=AeGwbIyz9fkoiaa7UKkdjKuFzzjx7ZARUSDPOPHtkBFRIMjQ5a58SSjb4-09hGz_5J4CPJ6JonpeOnxi29pbS88D&_nc_ohc=KbG5TT4GuY0AX859emw&_nc_ht=scontent.fbog4-1.fna&oh=00_AT9bTvkoUh5aRrphZRFsOt7Qu-bPy-f_uhJc3-e88uWETw&oe=6323986B
+
+# Bad cases
+https://upload.wikimedia.org/wikipedia/commons/5/56/Tux.jpg
+https://www3.gobiernodecanarias.org/medusa/ecoescuela/sa/files/formidable/6/mondrian-1504681_960_720.png
+"""

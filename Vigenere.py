@@ -80,5 +80,3 @@ EXAMPLE
 print(Encrypt("CIPHER", "This Cryptosystem is not secure"))
 print(Decrypt("CIPHER", "vpxzgiaxivwpubttmjpwizitwzt"))
 """
-print(Encrypt("CIPHER", "This Cryptosystem is not secure"))
-print(Decrypt("CIPHER", "vpxzgiaxivwpubttmjpwizitwzt"))
